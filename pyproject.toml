@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "metabsuir-fast-api"
+version = "0.1.0"
+description = ""
+authors = ["esquiresword <71277778+esquiresword@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "metabsuir_fast_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.85.0"
+alembic = "^1.8.1"
+uvicorn = "^0.18.3"
+SQLAlchemy = "^1.4.41"
+python-dotenv = "^0.21.0"
+psycopg2-binary = "^2.9.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
