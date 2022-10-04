@@ -21,3 +21,21 @@ class UserModel(UserBase):
 class Token(BaseModel):
 	access_token: str
 	token_type: str = "bearer"
+
+
+class AdditionalInfoBase(BaseModel):
+	user_id: int
+	first_name: str | None = None
+	surname: str | None = None
+	status: str | None = None
+
+	class Config:
+		orm_mode = True
+
+
+class AdditionalInfoModel(AdditionalInfoBase):
+	id: int
+
+
+class AdditionalInfoCreate(AdditionalInfoBase):
+	pass
