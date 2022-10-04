@@ -1,10 +1,14 @@
 # Module specific business logic
 from passlib.hash import bcrypt
-from jose import jwt
+from jose import jwt, JWTError
+from pydantic import ValidationError
 from pydantic.schema import datetime, timedelta
+from fastapi import Depends
+from sqlalchemy.orm import Session
 
-from app import config
-from .schemas import UserModel, Token
+from .exceptions import unauthorized
+from app import config, database
+from .schemas import UserModel, Token, UserCreate
 from .models import User
 
 
@@ -20,9 +24,15 @@ class AuthService:
 
 	@classmethod
 	def validate_token(cls, token: str) -> UserModel:
-		payload = jwt.decode(token, config.JWT_SECRET, algorithms=["HS256"])
+		try:
+			payload = jwt.decode(token, config.JWT_SECRET, algorithms=["HS256"])
+		except JWTError:
+			raise unauthorized
 		user_data = payload.get("user")
-		user = UserModel.parse_obj(user_data)
+		try:
+			user = UserModel.parse_obj(user_data)
+		except ValidationError:
+			raise unauthorized
 		return user
 
 	@classmethod
@@ -38,3 +48,24 @@ class AuthService:
 		}
 		token = jwt.encode(payload, config.JWT_SECRET, algorithm=["HS256"])
 		return Token(access_token=token)
+
+	def __init__(self, session: Session = Depends(database.get_session)):
+		self.session = session
+
+	def register(self, user_data: UserCreate) -> Token:
+		user = User(
+			username=user_data.username,
+			email=user_data.email,
+			password=self.hash_password(user_data.password)
+		)
+		self.session.add(user)
+		self.session.commit()
+		return self.create_token(user)
+
+	def login(self, username: str, password: str) -> Token:
+		user = self.session.query(User).filter_by(username=username).first()
+		if not user:
+			raise unauthorized
+		if not self.verify_password(password=password, hashed_password=user.password):
+			raise unauthorized
+		return self.create_token(user)
