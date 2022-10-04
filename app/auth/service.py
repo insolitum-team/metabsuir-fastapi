@@ -10,6 +10,11 @@ from .exceptions import unauthorized
 from app import config, database
 from .schemas import UserModel, Token, UserCreate
 from .models import User
+from .dependencies import auth_scheme
+
+
+def get_user(token: str = Depends(auth_scheme)) -> UserModel:
+	return AuthService.validate_token(token=token)
 
 
 class AuthService:
@@ -69,3 +74,9 @@ class AuthService:
 		if not self.verify_password(password=password, hashed_password=user.password):
 			raise unauthorized
 		return self.create_token(user)
+
+	def set_additional_info(self, user_id: int):
+		pass
+
+	def get_additional_info(self, user_id: int):
+		pass
