@@ -19,7 +19,7 @@ def get_application() -> FastAPI:
         version="0.1.0",
         openapi_tags=tags_metadata,
     )
-    application.include_router(router)
+    # application.include_router(router)
     return application
 
 
