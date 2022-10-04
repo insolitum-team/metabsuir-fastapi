@@ -2,7 +2,6 @@
 
 from app.auth import constants as auth_constants
 from app.auth.constants import ErrorCode as PostsErrorCode
-from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database import get_session
@@ -13,7 +12,7 @@ router = APIRouter()
 
 
 # todo Create response model
-@router.get("/")
+@router.get("/", response_model=list[SectionList])
 def section_list(db: Session = Depends(get_session)):
     return get_section_list(db)
 
