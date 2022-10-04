@@ -20,7 +20,7 @@ After creating new models you need to import them into alembic/env.py <br><br><h
 Then:
 
 - <b>make migrations</b>:
-> alembic revision --autogenerate -n "First"<br>
+> alembic revision --autogenerate -m "First"<br>
 
 *("First" - migration title)*
 
