@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
-from app.api.routes.api import router
+# from app.auth.router import router
+# from app.forum.router import router
 
 
 tags_metadata = [
