@@ -13,11 +13,11 @@ class Section(Base):
     date = Column(DateTime)
 
 
-class Theme(Base):  # Not migrated
-    __tablename__ = "metabsuir_themes"
-
-    id = Column(Integer, primary_key=True, index=True, unique=True)
-    title = Column(String(250))
-    date = Column(DateTime)
+# class Theme(Base):  # Not migrated
+#     __tablename__ = "metabsuir_themes"
+#
+#     id = Column(Integer, primary_key=True, index=True, unique=True)
+#     title = Column(String(250))
+#     date = Column(DateTime)
     # user = Column(Integer, ForeignKey("user.id"))
     # user_id = relationship("User")
