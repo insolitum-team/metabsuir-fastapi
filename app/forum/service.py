@@ -25,8 +25,8 @@ class ForumService:
     def get_theme_list(self):
         return self.session.query(Theme).all()
 
-    def create_theme_service(self, item: ThemeCreate, user_id: int):
-        theme = Theme(**item.dict(), user_id=user_id)
+    def create_theme_service(self, item: ThemeCreate, user_id: int, section_id: int):
+        theme = Theme(**item.dict(), user_id=user_id, section_id=section_id)
         self.session.add(theme)
         self.session.commit()
         return theme
@@ -38,8 +38,11 @@ class ForumService:
     def get_message_list(self):
         return self.session.query(Message).all()
 
-    def create_message_service(self, item: MessageCreate, user_id: int) -> Message:
-        message = Message(**item.dict(), user_id=user_id)
+    def create_message_service(self, item: MessageCreate, user_id: int, theme_id: int | None = None) -> Message:
+        if theme_id:
+            message = Message(**item.dict(), user_id=user_id, theme=theme_id)
+        else:
+            message = Message(**item.dict(), user_id=user_id)
         self.session.add(message)
         self.session.commit()
         return message
