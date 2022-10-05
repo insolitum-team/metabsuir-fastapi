@@ -12,7 +12,7 @@ tags_metadata = [
         "description": "MetaBSUIR forum"
     },
     {
-        "name": "auth",
+        "name": "authentication",
         "description": "MetaBSUIR authentication"
     },
 ]

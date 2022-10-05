@@ -8,7 +8,10 @@ from app.database import get_session
 from app.forum.service import get_section_list, create_section_service
 from app.forum.schemas import SectionCreate, SectionList
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/forum",
+    tags=["forum"]
+)
 
 
 # todo Create response model
