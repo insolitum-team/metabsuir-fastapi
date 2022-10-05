@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from .exceptions import unauthorized
 from app import config, database
-from .schemas import UserModel, Token, UserCreate, AdditionalInfoCreate
+from .schemas import UserModel, Token, UserCreate
 from .models import User
 from .dependencies import oauth2_scheme
 
@@ -74,9 +74,3 @@ class AuthService:
 		if not self.verify_password(password=password, hashed_password=user.password):
 			raise unauthorized
 		return self.create_token(user)
-
-	def set_additional_info(self, user_id: int, info_data: AdditionalInfoCreate):
-		pass
-
-	def get_additional_info(self, user_id: int):
-		pass
