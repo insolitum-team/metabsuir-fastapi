@@ -21,7 +21,6 @@ class SectionCreate(SectionBase):
 class ThemeBase(BaseModel):
     title: str
     date: datetime
-    user_id: int
 
     class Config:
         orm_mode = True
@@ -36,7 +35,6 @@ class ThemeCreate(ThemeBase):
 
 
 class MessageBase(BaseModel):
-    theme: str
     date: datetime
 
     class Config:
@@ -49,3 +47,10 @@ class MessageModel(MessageBase):
 
 class MessageCreate(MessageBase):
     content: str
+
+
+class MessageUpdate(BaseModel):
+    content: str
+
+    class Config:
+        orm_mode = True

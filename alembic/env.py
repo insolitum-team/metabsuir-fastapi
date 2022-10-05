@@ -9,8 +9,9 @@ from app.config import DATABASE_URL
 from app.database import Base
 
 # Import all the models for alembic
-from app.forum.models import Section
-from app.auth.models import User, UserAdditionalInfo
+from app.forum.models import Section, Message, Theme
+from app.auth.models import User
+from app.profile.models import UserAdditionalInfo
 
 config = context.config
 

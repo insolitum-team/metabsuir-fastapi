@@ -4,7 +4,9 @@
 # from app.auth.constants import ErrorCode as PostsErrorCode
 from fastapi import APIRouter, Depends
 
-from app.forum.schemas import SectionCreate, SectionModel, ThemeCreate, ThemeModel, MessageCreate, MessageModel
+from app.forum.schemas import (
+    SectionCreate, SectionModel, ThemeCreate, ThemeModel, MessageCreate, MessageModel, MessageUpdate,
+)
 from app.forum.service import ForumService
 from app.auth.schemas import UserModel
 from app.auth.service import get_user
@@ -44,3 +46,20 @@ def message_list(service: ForumService = Depends()):
 @router.post("/messages")
 def create_message(message_data: MessageCreate, user: UserModel = Depends(get_user), service: ForumService = Depends()):
     return service.create_message_service(message_data, user.id)
+
+
+@router.put("/update-message")
+def update_message(
+        message_id: int,
+        message_info: MessageUpdate,
+        service: ForumService = Depends(),
+):
+    return service.update_message_service(message_id=message_id, message_info=message_info)
+
+
+@router.delete("/delete-message")
+def delete_message(
+        message_id: int,
+        service: ForumService = Depends()
+):
+    return service.delete_message_service(message_id=message_id)
