@@ -34,8 +34,12 @@ def theme_list(service: ForumService = Depends()):
 
 
 @router.post("/themes")
-def create_theme(theme_data: ThemeCreate, user: UserModel = Depends(get_user), service: ForumService = Depends()):
-    return service.create_theme_service(theme_data, user.id)
+def create_theme(
+        section_id: int,
+        theme_data: ThemeCreate,
+        user: UserModel = Depends(get_user),
+        service: ForumService = Depends()):
+    return service.create_theme_service(item=theme_data, user_id=user.id, section_id=section_id)
 
 
 @router.get("/messages", response_model=list[MessageModel])
@@ -44,8 +48,13 @@ def message_list(service: ForumService = Depends()):
 
 
 @router.post("/messages")
-def create_message(message_data: MessageCreate, user: UserModel = Depends(get_user), service: ForumService = Depends()):
-    return service.create_message_service(message_data, user.id)
+def create_message(
+        message_data: MessageCreate,
+        theme_id: int | None = None,
+        user: UserModel = Depends(get_user),
+        service: ForumService = Depends()
+):
+    return service.create_message_service(item=message_data, user_id=user.id, theme_id=theme_id)
 
 
 @router.put("/update-message")
