@@ -1,9 +1,7 @@
-# Pydantic models
 from pydantic import BaseModel
 from datetime import datetime
 
 
-# --------- Sections --------- #
 class SectionBase(BaseModel):
     title: str
     date: datetime
@@ -12,7 +10,7 @@ class SectionBase(BaseModel):
         orm_mode = True
 
 
-class SectionList(SectionBase):
+class SectionModel(SectionBase):
     id: int
 
 
@@ -20,17 +18,16 @@ class SectionCreate(SectionBase):
     pass
 
 
-# --------- Themes --------- #
 class ThemeBase(BaseModel):
     title: str
     date: datetime
-    user_id = int
+    user_id: int
 
     class Config:
         orm_mode = True
 
 
-class ThemeList(ThemeBase):
+class ThemeModel(ThemeBase):
     id: int
 
 
@@ -38,16 +35,15 @@ class ThemeCreate(ThemeBase):
     pass
 
 
-# --------- Messages --------- #
 class MessageBase(BaseModel):
-    theme = str
-    date = datetime
+    theme: str
+    date: datetime
 
     class Config:
         orm_mode = True
 
 
-class MessageList(MessageBase):
+class MessageModel(MessageBase):
     id: int
 
 
