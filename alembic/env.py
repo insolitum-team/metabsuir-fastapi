@@ -10,6 +10,7 @@ from app.database import Base
 
 # Import all the models for alembic
 from app.forum.models import Section
+from app.auth.models import User, UserAdditionalInfo
 
 config = context.config
 

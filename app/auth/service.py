@@ -8,12 +8,12 @@ from sqlalchemy.orm import Session
 
 from .exceptions import unauthorized
 from app import config, database
-from .schemas import UserModel, Token, UserCreate
+from .schemas import UserModel, Token, UserCreate, AdditionalInfoCreate
 from .models import User
-from .dependencies import auth_scheme
+from .dependencies import oauth2_scheme
 
 
-def get_user(token: str = Depends(auth_scheme)) -> UserModel:
+def get_user(token: str = Depends(oauth2_scheme)) -> UserModel:
 	return AuthService.validate_token(token=token)
 
 
@@ -51,7 +51,7 @@ class AuthService:
 			"sub": str(user_data.id),
 			"user": user_data.dict(),
 		}
-		token = jwt.encode(payload, config.JWT_SECRET, algorithm=["HS256"])
+		token = jwt.encode(payload, config.JWT_SECRET, algorithm="HS256")
 		return Token(access_token=token)
 
 	def __init__(self, session: Session = Depends(database.get_session)):
@@ -75,7 +75,7 @@ class AuthService:
 			raise unauthorized
 		return self.create_token(user)
 
-	def set_additional_info(self, user_id: int):
+	def set_additional_info(self, user_id: int, info_data: AdditionalInfoCreate):
 		pass
 
 	def get_additional_info(self, user_id: int):

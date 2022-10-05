@@ -10,7 +10,7 @@ class User(Base):
 	id = Column(Integer, primary_key=True, index=True, unique=True)
 	username = Column(String(20))
 	email = Column(String(50))
-	password = Column(String(50))
+	password = Column(String(255))
 
 
 class UserAdditionalInfo(Base):
