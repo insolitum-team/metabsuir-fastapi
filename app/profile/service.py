@@ -1,6 +1,7 @@
 from fastapi import Depends, UploadFile, File
 from sqlalchemy.orm import Session
 import shutil
+import os
 
 from app import database
 from app.profile.models import UserAdditionalInfo
@@ -17,9 +18,10 @@ class ProfileService:
 			info_data: AdditionalInfoCreate,
 			image: UploadFile = File(),
 	) -> UserAdditionalInfo:
-		with open(f"{image.filename}", "wb") as buffer:
+		path = os.path.join("images/", image.filename)
+		with open(path, "wb") as buffer:
 			shutil.copyfileobj(image.file, buffer)
-		additional_info = UserAdditionalInfo(**info_data.dict(), user_id=user_id)
+		additional_info = UserAdditionalInfo(**info_data.dict(), user_id=user_id, image_path=path)
 		self.session.add(additional_info)
 		self.session.commit()
 		return additional_info

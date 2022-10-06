@@ -12,6 +12,7 @@ class AdditionalInfoBase(BaseModel):
 
 class AdditionalInfoModel(AdditionalInfoBase):
 	id: int
+	image_path: str
 
 
 class AdditionalInfoCreate(AdditionalInfoBase):
