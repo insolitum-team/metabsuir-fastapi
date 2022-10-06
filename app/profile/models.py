@@ -11,3 +11,4 @@ class UserAdditionalInfo(Base):
 	first_name = Column(String(20), nullable=True)
 	surname = Column(String(20), nullable=True)
 	status = Column(String(255), nullable=True)
+	image_path = Column(String, nullable=True)
