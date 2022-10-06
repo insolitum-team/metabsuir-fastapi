@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, File
 
 from app.auth.schemas import UserModel
 from app.auth.service import get_user
@@ -14,10 +14,11 @@ router = APIRouter(
 @router.post("/set-info")
 def set_info(
 		info_data: AdditionalInfoCreate,
+		image: UploadFile = File(),
 		user: UserModel = Depends(get_user),
 		service: ProfileService = Depends()
 ):
-	return service.set_additional_info(user_id=user.id, info_data=info_data)
+	return service.set_additional_info(user_id=user.id, info_data=info_data, image=image)
 
 
 @router.get("/get-info")
