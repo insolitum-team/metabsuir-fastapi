@@ -32,10 +32,11 @@ def get_info(
 @router.put("/update-info")
 def update_info(
 		info_data: AdditionalInfoUpdate,
+		image: UploadFile = File(),
 		user: UserModel = Depends(get_user),
 		service: ProfileService = Depends()
 ):
-	return service.update_additional_info(user_id=user.id, info_data=info_data)
+	return service.update_additional_info(user_id=user.id, info_data=info_data, image=image)
 
 
 @router.delete("/delete-info")
