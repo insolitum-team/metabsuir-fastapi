@@ -23,7 +23,9 @@ class ProfileService:
 			shutil.copyfileobj(image.file, buffer)
 		additional_info = UserAdditionalInfo(
 			user_id=user_id,
-			**info_data.dict(),
+			first_name=info_data.first_name,
+			surname=info_data.surname,
+			status=info_data.status,
 			image_path=path,
 		)
 		self.session.add(additional_info)

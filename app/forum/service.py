@@ -12,7 +12,12 @@ class ForumService:
         self.session = session
 
     # --------- Sections --------- #
-    def get_section_list(self):
+    def get_section_list(
+            self,
+            section_id: int | None = None,
+    ):
+        if section_id:
+            return self.session.query(Section).get(section_id)
         return self.session.query(Section).all()
 
     def create_section_service(self, item: SectionCreate):
@@ -22,7 +27,15 @@ class ForumService:
         return section
 
     # --------- Themes --------- #
-    def get_theme_list(self):
+    def get_theme_list(
+            self,
+            theme_id: int | None = None,
+            section_id: int | None = None,
+    ):
+        if theme_id:
+            return self.session.query(Theme).get(theme_id)
+        elif section_id:
+            return self.session.query(Theme).filter_by(section_id=section_id).all()
         return self.session.query(Theme).all()
 
     def create_theme_service(self, item: ThemeCreate, user_id: int, section_id: int):
@@ -35,12 +48,17 @@ class ForumService:
     def get_message(self, message_id: int) -> Message:
         return self.session.query(Message).get(message_id)
 
-    def get_message_list(self):
+    def get_message_list(
+            self,
+            theme_id: int | None = None
+    ):
+        if theme_id:
+            return self.session.query(Message).filter_by(theme_id=theme_id).all()
         return self.session.query(Message).all()
 
     def create_message_service(self, item: MessageCreate, user_id: int, theme_id: int | None = None) -> Message:
         if theme_id:
-            message = Message(**item.dict(), user_id=user_id, theme=theme_id)
+            message = Message(**item.dict(), user_id=user_id, theme_id=theme_id)
         else:
             message = Message(**item.dict(), user_id=user_id)
         self.session.add(message)
