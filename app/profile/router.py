@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, UploadFile, File
 
 from app.auth.schemas import UserModel
 from app.auth.service import get_user
-from app.profile.schemas import AdditionalInfoUpdate, AdditionalInfoCreate
+from app.profile.schemas import AdditionalInfoUpdate, AdditionalInfoCreate, AdditionalInfoModel
 from app.profile.service import ProfileService
 
 router = APIRouter(
@@ -11,14 +11,14 @@ router = APIRouter(
 )
 
 
-@router.post("/set-info")
+@router.post("/set-info", response_model=AdditionalInfoModel)
 def set_info(
-		info_data: AdditionalInfoCreate,
-		image: UploadFile = File(),
+		info_data: AdditionalInfoCreate = Depends(),
+		image: UploadFile = File(...),
 		user: UserModel = Depends(get_user),
 		service: ProfileService = Depends()
 ):
-	return service.set_additional_info(user_id=user.id, info_data=info_data, image=image)
+	return service.set_additional_info(user_id=user.id, data=info_data, image=image)
 
 
 @router.get("/get-info")
@@ -31,12 +31,12 @@ def get_info(
 
 @router.put("/update-info")
 def update_info(
-		info_data: AdditionalInfoUpdate,
+		info_data: AdditionalInfoUpdate = Depends(),
 		image: UploadFile = File(),
 		user: UserModel = Depends(get_user),
 		service: ProfileService = Depends()
 ):
-	return service.update_additional_info(user_id=user.id, info_data=info_data, image=image)
+	return service.update_additional_info(user_id=user.id, data=info_data, image=image)
 
 
 @router.delete("/delete-info")
