@@ -18,9 +18,12 @@ router = APIRouter(
 
 
 # --------- Sections routes --------- #
-@router.get("/sections", response_model=list[SectionModel])
-def section_list(service: ForumService = Depends()):
-    return service.get_section_list()
+@router.get("/sections")
+def section_list(
+        section_id: int | None = None,
+        service: ForumService = Depends()
+):
+    return service.get_section_list(section_id=section_id)
 
 
 @router.post("/sections")
@@ -28,9 +31,13 @@ def create_section(section_data: SectionCreate, service: ForumService = Depends(
     return service.create_section_service(section_data)
 
 
-@router.get("/themes", response_model=list[ThemeModel])
-def theme_list(service: ForumService = Depends()):
-    return service.get_theme_list()
+@router.get("/themes")
+def theme_list(
+        theme_id: int | None = None,
+        section_id: int | None = None,
+        service: ForumService = Depends(),
+):
+    return service.get_theme_list(theme_id=theme_id, section_id=section_id)
 
 
 @router.post("/themes")
@@ -42,9 +49,12 @@ def create_theme(
     return service.create_theme_service(item=theme_data, user_id=user.id, section_id=section_id)
 
 
-@router.get("/messages", response_model=list[MessageModel])
-def message_list(service: ForumService = Depends()):
-    return service.get_message_list()
+@router.get("/messages")
+def message_list(
+        theme_id: int | None = None,
+        service: ForumService = Depends(),
+):
+    return service.get_message_list(theme_id=theme_id)
 
 
 @router.post("/messages")

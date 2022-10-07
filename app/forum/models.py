@@ -29,7 +29,7 @@ class Message(Base):
 
     id = Column(Integer, primary_key=True, index=True, unique=True)
     content = Column(Text)
-    theme = Column(Integer, ForeignKey("metabsuir_themes.id"), nullable=True)
+    theme_id = Column(Integer, ForeignKey("metabsuir_themes.id"), nullable=True)
     user_id = Column(Integer, ForeignKey("metabsuir_users.id"))
     reply_to = Column(Integer)
     date = Column(DateTime)
