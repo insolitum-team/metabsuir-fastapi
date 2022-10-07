@@ -15,17 +15,15 @@ class ProfileService:
 	def set_additional_info(
 			self,
 			user_id: int,
-			info_data: AdditionalInfoCreate,
-			image: UploadFile = File(),
+			data: AdditionalInfoCreate,
+			image: UploadFile = File(...),
 	) -> UserAdditionalInfo:
 		path = os.path.join("images/", image.filename)
 		with open(path, "wb") as buffer:
 			shutil.copyfileobj(image.file, buffer)
 		additional_info = UserAdditionalInfo(
 			user_id=user_id,
-			first_name=info_data.first_name,
-			surname=info_data.surname,
-			status=info_data.status,
+			**data.dict(),
 			image_path=path,
 		)
 		self.session.add(additional_info)
@@ -39,14 +37,14 @@ class ProfileService:
 	def update_additional_info(
 			self,
 			user_id: int,
-			info_data: AdditionalInfoUpdate,
+			data: AdditionalInfoUpdate,
 			image: UploadFile = File(),
 	) -> UserAdditionalInfo:
 		path = os.path.join("images/", image.filename)
 		with open(path, "wb") as buffer:
 			shutil.copyfileobj(image.file, buffer)
 		additional_info = self.get_additional_info(user_id=user_id)
-		for field, value in info_data:
+		for field, value in data:
 			setattr(additional_info, field, value)
 		additional_info.image_path = path
 		self.session.commit()
