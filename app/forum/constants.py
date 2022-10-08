@@ -1,3 +1,6 @@
-# Module specific constants and error codes
+from enum import Enum
 
-ErrorCode = 404
+
+class ImageType(str, Enum):
+	THEME = "theme"
+	MESSAGE = "message"

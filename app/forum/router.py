@@ -1,11 +1,7 @@
-# Core of each module with all the endpoints
-
-# from app.auth import constants as auth_constants
-# from app.auth.constants import ErrorCode as PostsErrorCode
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, File
 
 from app.forum.schemas import (
-    SectionCreate, SectionModel, ThemeCreate, ThemeModel, MessageCreate, MessageModel, MessageUpdate,
+    SectionCreate, ThemeCreate, MessageCreate, MessageUpdate, SectionModel
 )
 from app.forum.service import ForumService
 from app.auth.schemas import UserModel
@@ -18,10 +14,10 @@ router = APIRouter(
 
 
 # --------- Sections routes --------- #
-@router.get("/sections")
+@router.get("/sections", response_model=SectionModel)
 def section_list(
         section_id: int | None = None,
-        service: ForumService = Depends()
+        service: ForumService = Depends(),
 ):
     return service.get_section_list(section_id=section_id)
 
@@ -31,6 +27,7 @@ def create_section(section_data: SectionCreate, service: ForumService = Depends(
     return service.create_section_service(section_data)
 
 
+# --------- Theme routes --------- #
 @router.get("/themes")
 def theme_list(
         theme_id: int | None = None,
@@ -43,12 +40,20 @@ def theme_list(
 @router.post("/themes")
 def create_theme(
         section_id: int,
-        theme_data: ThemeCreate,
+        theme_data: ThemeCreate = Depends(),
         user: UserModel = Depends(get_user),
-        service: ForumService = Depends()):
-    return service.create_theme_service(item=theme_data, user_id=user.id, section_id=section_id)
+        service: ForumService = Depends(),
+        image: UploadFile = File(...),
+):
+    return service.create_theme_service(
+        item=theme_data,
+        user_id=user.id,
+        section_id=section_id,
+        image=image,
+    )
 
 
+# --------- Messages routes --------- #
 @router.get("/messages")
 def message_list(
         theme_id: int | None = None,
@@ -62,9 +67,15 @@ def create_message(
         message_data: MessageCreate,
         theme_id: int | None = None,
         user: UserModel = Depends(get_user),
-        service: ForumService = Depends()
+        service: ForumService = Depends(),
+        image: UploadFile = File(...),
 ):
-    return service.create_message_service(item=message_data, user_id=user.id, theme_id=theme_id)
+    return service.create_message_service(
+        item=message_data,
+        user_id=user.id,
+        theme_id=theme_id,
+        image=image,
+    )
 
 
 @router.put("/update-message")

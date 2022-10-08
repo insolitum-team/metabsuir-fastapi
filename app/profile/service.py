@@ -13,8 +13,7 @@ class ProfileService:
 
 	@classmethod
 	def _get_path(cls, filename: str):
-		path = os.path.join(config.PROFILE_IMAGE_PATH, filename)
-		return path
+		return os.path.join(config.PROFILE_IMAGE_PATH, filename)
 
 	def __init__(self, session: Session = Depends(database.get_session)):
 		self.session = session
