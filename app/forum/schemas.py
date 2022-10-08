@@ -12,6 +12,7 @@ class SectionBase(BaseModel):
 
 class SectionModel(SectionBase):
     id: int
+    image_path: str | None = None
 
 
 class SectionCreate(SectionBase):
@@ -20,7 +21,6 @@ class SectionCreate(SectionBase):
 
 class ThemeBase(BaseModel):
     title: str
-    date: datetime
 
     class Config:
         orm_mode = True
@@ -28,6 +28,8 @@ class ThemeBase(BaseModel):
 
 class ThemeModel(ThemeBase):
     id: int
+    image_path: str | None = None
+    date: datetime
 
 
 class ThemeCreate(ThemeBase):
@@ -43,6 +45,7 @@ class MessageBase(BaseModel):
 
 class MessageModel(MessageBase):
     id: int
+    image_path: str | None = None
 
 
 class MessageCreate(MessageBase):
