@@ -1,0 +1,1 @@
+PROFILE_IMAGE_PATH = "images/"

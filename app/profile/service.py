@@ -3,14 +3,26 @@ from sqlalchemy.orm import Session
 import shutil
 import os
 
+from app.profile import config
 from app import database
 from app.profile.models import UserAdditionalInfo
 from app.profile.schemas import AdditionalInfoCreate, AdditionalInfoUpdate
 
 
 class ProfileService:
+
+	@classmethod
+	def _get_path(cls, filename: str):
+		path = os.path.join(config.PROFILE_IMAGE_PATH, filename)
+		return path
+
 	def __init__(self, session: Session = Depends(database.get_session)):
 		self.session = session
+
+	def _upload_image(self, image: UploadFile = File(...)):
+		path = self._get_path(filename=image.filename)
+		with open(path, "wb") as buffer:
+			shutil.copyfileobj(image.file, buffer)
 
 	def set_additional_info(
 			self,
@@ -18,13 +30,11 @@ class ProfileService:
 			data: AdditionalInfoCreate,
 			image: UploadFile = File(...),
 	) -> UserAdditionalInfo:
-		path = os.path.join("images/", image.filename)
-		with open(path, "wb") as buffer:
-			shutil.copyfileobj(image.file, buffer)
+		self._upload_image(image=image)
 		additional_info = UserAdditionalInfo(
 			user_id=user_id,
 			**data.dict(),
-			image_path=path,
+			image_path=self._get_path(filename=image.filename),
 		)
 		self.session.add(additional_info)
 		self.session.commit()
@@ -40,13 +50,11 @@ class ProfileService:
 			data: AdditionalInfoUpdate,
 			image: UploadFile = File(),
 	) -> UserAdditionalInfo:
-		path = os.path.join("images/", image.filename)
-		with open(path, "wb") as buffer:
-			shutil.copyfileobj(image.file, buffer)
+		self._upload_image(image=image)
 		additional_info = self.get_additional_info(user_id=user_id)
 		for field, value in data:
 			setattr(additional_info, field, value)
-		additional_info.image_path = path
+		additional_info.image_path = self._get_path(filename=image.filename)
 		self.session.commit()
 		return additional_info
 
