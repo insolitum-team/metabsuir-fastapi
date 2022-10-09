@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Depends
 
 from app.forum.schemas import (
-    SectionCreate, ThemeCreate, MessageCreate, MessageUpdate, SectionModel
+    SectionCreate, ThemeCreate, MessageCreate, MessageUpdate
 )
 from app.forum.service import ForumService
 from app.auth.schemas import UserModel
