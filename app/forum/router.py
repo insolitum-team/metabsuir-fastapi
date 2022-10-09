@@ -14,7 +14,7 @@ router = APIRouter(
 
 
 # --------- Sections routes --------- #
-@router.get("/sections", response_model=SectionModel)
+@router.get("/sections")
 def section_list(
         section_id: int | None = None,
         service: ForumService = Depends(),
@@ -40,16 +40,14 @@ def theme_list(
 @router.post("/themes")
 def create_theme(
         section_id: int,
-        theme_data: ThemeCreate = Depends(),
+        theme_data: ThemeCreate,
         user: UserModel = Depends(get_user),
         service: ForumService = Depends(),
-        image: UploadFile = File(...),
 ):
     return service.create_theme_service(
         item=theme_data,
         user_id=user.id,
         section_id=section_id,
-        image=image,
     )
 
 
@@ -65,16 +63,14 @@ def message_list(
 @router.post("/messages")
 def create_message(
         message_data: MessageCreate,
-        theme_id: int | None = None,
+        theme_id: int,
         user: UserModel = Depends(get_user),
         service: ForumService = Depends(),
-        image: UploadFile = File(...),
 ):
     return service.create_message_service(
         item=message_data,
         user_id=user.id,
         theme_id=theme_id,
-        image=image,
     )
 
 

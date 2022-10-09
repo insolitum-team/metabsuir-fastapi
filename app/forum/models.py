@@ -1,6 +1,5 @@
-# Database models
-
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Text
+import datetime
 
 from app.database import Base
 
@@ -19,8 +18,8 @@ class Theme(Base):
     id = Column(Integer, primary_key=True, index=True, unique=True)
     title = Column(String(250))
     body = Column(Text)
-    date = Column(DateTime)
-    image_path = Column(String, nullable=True)
+    date = Column(DateTime, default=datetime.datetime.utcnow)
+    image_url = Column(String, nullable=True)
     user_id = Column(Integer, ForeignKey("metabsuir_users.id"))
     section_id = Column(Integer, ForeignKey("metabsuir_sections.id"))
 
@@ -30,8 +29,8 @@ class Message(Base):
 
     id = Column(Integer, primary_key=True, index=True, unique=True)
     content = Column(Text)
-    image_path = Column(String, nullable=True)
+    image_url = Column(String, nullable=True)
     theme_id = Column(Integer, ForeignKey("metabsuir_themes.id"), nullable=True)
     user_id = Column(Integer, ForeignKey("metabsuir_users.id"))
     reply_to = Column(Integer)
-    date = Column(DateTime)
+    date = Column(DateTime, default=datetime.datetime.utcnow)
