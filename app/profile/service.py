@@ -62,7 +62,7 @@ class ProfileService:
 		self.session.delete(additional_info)
 		self.session.commit()
 
-	def get_chat_id_from_bot(self, data: AdditionalInfoTelegram):
+	def get_chat_id_from_bot(self, data: AdditionalInfoTelegram) -> UserAdditionalInfo:
 		user_info = self.session.query(UserAdditionalInfo).filter_by(user_id=int(data.user_id)).first()
 		user_info.chat_id = data.chat_id
 		self.session.commit()
