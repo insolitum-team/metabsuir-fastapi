@@ -13,6 +13,7 @@ class AdditionalInfoBase(BaseModel):
 class AdditionalInfoModel(AdditionalInfoBase):
 	id: int
 	image_path: str | None = None
+	telegram_id: str | None = None
 
 
 class AdditionalInfoCreate(AdditionalInfoBase):
@@ -21,3 +22,8 @@ class AdditionalInfoCreate(AdditionalInfoBase):
 
 class AdditionalInfoUpdate(AdditionalInfoBase):
 	pass
+
+
+class AdditionalInfoTelegram(BaseModel):
+	user_id: str
+	chat_id: str

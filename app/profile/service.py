@@ -6,7 +6,7 @@ import os
 from app.profile import config
 from app import database
 from app.profile.models import UserAdditionalInfo
-from app.profile.schemas import AdditionalInfoCreate, AdditionalInfoUpdate
+from app.profile.schemas import AdditionalInfoCreate, AdditionalInfoUpdate, AdditionalInfoTelegram
 
 
 class ProfileService:
@@ -62,8 +62,8 @@ class ProfileService:
 		self.session.delete(additional_info)
 		self.session.commit()
 
-	def get_chat_id_from_bot(self, user_id: str, chat_id: str) -> UserAdditionalInfo:
-		user = self.session.query(UserAdditionalInfo).filter_by(user_id=int(user_id))
-		user.telegram_id = chat_id
+	def get_chat_id_from_bot(self, data: AdditionalInfoTelegram):
+		user_info = self.session.query(UserAdditionalInfo).filter_by(user_id=int(data.user_id)).first()
+		user_info.chat_id = data.chat_id
 		self.session.commit()
-		return user
+		return user_info

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, UploadFile, File
 
 from app.auth.schemas import UserModel
 from app.auth.service import get_user
-from app.profile.schemas import AdditionalInfoUpdate, AdditionalInfoCreate, AdditionalInfoModel
+from app.profile.schemas import AdditionalInfoUpdate, AdditionalInfoCreate, AdditionalInfoModel, AdditionalInfoTelegram
 from app.profile.service import ProfileService
 
 router = APIRouter(
@@ -48,5 +48,5 @@ def delete_info(
 
 
 @router.post("/get-chat-id")
-def get_chat_id(user_id: str, chat_id: str, service: ProfileService = Depends()):
-	return service.get_chat_id_from_bot(user_id=user_id, chat_id=chat_id)
+def get_chat_id(data: AdditionalInfoTelegram = Depends(), service: ProfileService = Depends()):
+	return service.get_chat_id_from_bot(data=data)

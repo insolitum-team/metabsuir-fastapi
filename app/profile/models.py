@@ -12,4 +12,4 @@ class UserAdditionalInfo(Base):
 	surname = Column(String(20), nullable=True)
 	status = Column(String(255), nullable=True)
 	image_path = Column(String, nullable=True)
-	telegram_id = Column(String, nullable=True)
+	chat_id = Column(String, nullable=True)
