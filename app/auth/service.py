@@ -11,6 +11,7 @@ from app import config, database
 from .schemas import UserModel, Token, UserCreate
 from .models import User
 from .dependencies import oauth2_scheme
+from app.profile.models import UserAdditionalInfo
 
 
 def get_user(token: str = Depends(oauth2_scheme)) -> UserModel:
@@ -64,6 +65,11 @@ class AuthService:
 			password=self.hash_password(user_data.password)
 		)
 		self.session.add(user)
+		self.session.commit()
+		user_additional_info = UserAdditionalInfo(
+			user_id=user.id,
+		)
+		self.session.add(user_additional_info)
 		self.session.commit()
 		return self.create_token(user)
 
