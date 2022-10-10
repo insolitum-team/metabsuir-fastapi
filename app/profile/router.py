@@ -45,3 +45,8 @@ def delete_info(
 		service: ProfileService = Depends()
 ):
 	return service.delete_additional_info(user_id=user.id)
+
+
+@router.post("/get-chat-id")
+def get_chat_id(user_id: str, chat_id: str, service: ProfileService = Depends()):
+	return service.get_chat_id_from_bot(user_id=user_id, chat_id=chat_id)
