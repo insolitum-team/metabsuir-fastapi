@@ -27,3 +27,13 @@ def sign_in(form_data: OAuth2PasswordRequestForm = Depends(), service: AuthServi
 @router.get("/user", response_model=UserModel)
 def get_user(user: UserModel = Depends(get_user)):
 	return user
+
+
+@router.post("/reset-password")
+def reset_password_route():
+	pass
+
+
+@router.post("/restore-password")
+def restore_password_route():
+	pass

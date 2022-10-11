@@ -1,13 +1,13 @@
 # Module specific business logic
 from fastapi import Depends
 from sqlalchemy.orm import Session
-# import requests
+import requests
 
 from app.forum.models import Section, Theme, Message
 from app.forum.schemas import SectionCreate, ThemeCreate, MessageCreate, MessageUpdate
 from app.database import get_session
-# from app.profile.models import UserAdditionalInfo
-# from app import config
+from app.profile.models import UserAdditionalInfo
+from app import config
 
 
 class ForumService:
@@ -75,15 +75,16 @@ class ForumService:
             item: MessageCreate,
             theme_id: int,
     ) -> Message:
-        # if item.reply_to:
-        #     user_additional = self.session.query(UserAdditionalInfo).filter_by(user_id=item.reply_to)
-        #     if user_additional.telegram_id:
-        #         chat_id = user_additional.telegram_id
-        #         response = requests.post(
-        #             url=f"api.telegram.org/"
-        #                 f"bot{config.TELEGRAM_API_KEY}/"
-        #                 f"sendMessage?chat_id={chat_id}&text={item.content}"
-        #         )
+        if item.reply_to:
+            user_additional = self.session.query(UserAdditionalInfo).filter_by(user_id=item.reply_to)
+            if user_additional.telegram_id:
+                chat_id = user_additional.telegram_id
+                response = requests.post(
+                    url=f"api.telegram.org/"
+                        f"bot{config.TELEGRAM_API_KEY}/"
+                        f"sendMessage?chat_id={chat_id}&text={item.content}"
+                )
+                print(response)
         message = Message(**item.dict(), user_id=user_id, theme_id=theme_id)
         self.session.add(message)
         self.session.commit()
