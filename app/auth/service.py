@@ -80,3 +80,9 @@ class AuthService:
 		if not self.verify_password(password=password, hashed_password=user.password):
 			raise unauthorized
 		return self.create_token(user)
+
+	def reset_password(self):
+		pass
+
+	def restore_password(self):
+		pass
