@@ -19,6 +19,10 @@ def section_list(
         section_id: int | None = None,
         service: ForumService = Depends(),
 ):
+    """
+    Возвращает секцию или список секций.
+    - **section_id**: id секции (необязательное значение)
+    """
     return service.get_section_list(section_id=section_id)
 
 
@@ -34,6 +38,11 @@ def theme_list(
         section_id: int | None = None,
         service: ForumService = Depends(),
 ):
+    """
+    Возвращает тему или список тем.
+    - **theme_id**: id темы (необязательное значение)
+    - **section_id**: id секции к которой привязаны записи
+    """
     return service.get_theme_list(theme_id=theme_id, section_id=section_id)
 
 
@@ -55,8 +64,15 @@ def create_theme(
 @router.get("/messages")
 def message_list(
         theme_id: int | None = None,
+        message_id: int | None = None,
         service: ForumService = Depends(),
 ):
+    """
+    Возвращает список сообщений.
+    - **theme_id**: id темы к которой привязаны сообщения.
+    """
+    if message_id:
+        return service.get_message(message_id=message_id)
     return service.get_message_list(theme_id=theme_id)
 
 

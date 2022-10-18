@@ -16,11 +16,13 @@ router = APIRouter(
 
 @router.post("/sign-up", response_model=Token)
 def sign_up(user_data: UserCreate, service: AuthService = Depends()):
+	"""Регистрация пользователя"""
 	return service.register(user_data)
 
 
 @router.post("/sign-in", response_model=Token)
 def sign_in(form_data: OAuth2PasswordRequestForm = Depends(), service: AuthService = Depends()):
+	"""Авторизация пользователя"""
 	return service.login(username=form_data.username, password=form_data.password)
 
 
