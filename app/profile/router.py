@@ -26,6 +26,9 @@ def get_info(
 		user: UserModel = Depends(get_user),
 		service: ProfileService = Depends(),
 ):
+	"""
+	Возвращает дополнительную информацию пользователя.
+	"""
 	return service.get_additional_info(user_id=user.id)
 
 

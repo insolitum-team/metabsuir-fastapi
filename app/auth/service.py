@@ -7,11 +7,11 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from .exceptions import unauthorized
-from app import config, database
 from .schemas import UserModel, Token, UserCreate
 from .models import User
 from .dependencies import oauth2_scheme
 from app.profile.models import UserAdditionalInfo
+from app import config, database
 
 
 def get_user(token: str = Depends(oauth2_scheme)) -> UserModel:
