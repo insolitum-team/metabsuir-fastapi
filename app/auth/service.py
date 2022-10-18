@@ -7,7 +7,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from .exceptions import unauthorized
-from .schemas import UserModel, Token, UserCreate
+from .schemas import UserModel, Token, UserCreate, EmailToReset
 from .models import User
 from .dependencies import oauth2_scheme
 from app.profile.models import UserAdditionalInfo
@@ -19,6 +19,8 @@ def get_user(token: str = Depends(oauth2_scheme)) -> UserModel:
 
 
 class AuthService:
+
+	NOW = datetime.utcnow()
 
 	@classmethod
 	def verify_password(cls, password: str, hashed_password: str) -> bool:
@@ -44,11 +46,10 @@ class AuthService:
 	@classmethod
 	def create_token(cls, user: User) -> Token:
 		user_data = UserModel.from_orm(user)
-		now = datetime.utcnow()
 		payload = {
-			"iat": now,
-			"nbf": now,
-			"exp": now + timedelta(seconds=3600),
+			"iat": cls.NOW,
+			"nbf": cls.NOW,
+			"exp": cls.NOW + timedelta(seconds=3600),
 			"sub": str(user_data.id),
 			"user": user_data.dict(),
 		}
@@ -81,8 +82,28 @@ class AuthService:
 			raise unauthorized
 		return self.create_token(user)
 
-	def reset_password(self):
-		pass
+	def create_reset_password_token(self, email: str) -> Token:
+		user = self.session.query(User).filter_by(email=email).first()
+		payload = {
+			"iat": self.NOW,
+			"nbf": self.NOW,
+			"exp": self.NOW + timedelta(seconds=3600),
+			"sub": str(user.id),
+			"user_email": email,
+		}
+		token = jwt.encode(payload, config.JWT_SECRET, algorithm="HS256")
+		return Token(access_token=token)
 
-	def restore_password(self):
-		pass
+	def reset_password(self, email_data: EmailToReset) -> Token | int:
+		user = self.session.query(User).filter_by(email=email_data.email).first()
+		if not user:
+			return 0
+		url = self.create_reset_password_token(email=email_data.email)
+		return url
+
+	# def restore_password(self, password: ResetPassword, token: Token) -> 0:
+	# 	payload = jwt.decode(token, config.JWT_SECRET, algorithms=["HS256"])
+	# 	email = payload.get("user_email")
+	# 	user = self.session.query(User).filter_by(email=email)
+	# 	user.password = password.password
+	# 	return 0
