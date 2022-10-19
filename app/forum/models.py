@@ -34,3 +34,10 @@ class Message(Base):
     user_id = Column(Integer, ForeignKey("metabsuir_users.id"))
     reply_to = Column(Integer)
     date = Column(DateTime, default=datetime.datetime.utcnow)
+
+
+class PrivateMessages(Base):
+    __tablename__ = "metabsuir_private_messages"
+    id = Column(Integer, primary_key=True, index=True, unique=True)
+    user_id = Column(Integer, ForeignKey("metabsuir_users.id"))
+    message_id = Column(Integer, ForeignKey("metabsuir_messages.id"))
