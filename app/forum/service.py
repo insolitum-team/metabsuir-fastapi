@@ -79,12 +79,11 @@ class ForumService:
             user_additional = self.session.query(UserAdditionalInfo).filter_by(user_id=item.reply_to)
             if user_additional.telegram_id:
                 chat_id = user_additional.telegram_id
-                response = requests.post(
+                requests.post(
                     url=f"api.telegram.org/"
                         f"bot{config.TELEGRAM_API_KEY}/"
                         f"sendMessage?chat_id={chat_id}&text={item.content}"
                 )
-                print(response)
         message = Message(**item.dict(), user_id=user_id, theme_id=theme_id)
         self.session.add(message)
         self.session.commit()
