@@ -3,7 +3,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 import requests
 
-from app.forum.models import Section, Theme, Message
+from app.forum.models import Section, Theme, Message, PrivateMessages
 from app.forum.schemas import SectionCreate, ThemeCreate, MessageCreate, MessageUpdate
 from app.database import get_session
 from app.profile.models import UserAdditionalInfo
@@ -86,6 +86,9 @@ class ForumService:
                 )
         message = Message(**item.dict(), user_id=user_id, theme_id=theme_id)
         self.session.add(message)
+        self.session.commit()
+        private_message = PrivateMessages(user_id=user_id, message_id=message.id)
+        self.session.add(private_message)
         self.session.commit()
         return message
 
