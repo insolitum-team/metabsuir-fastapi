@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 # from app.auth import constants as auth_constants
 # from app.auth.constants import ErrorCode as PostsErrorCode
-from .schemas import UserCreate, UserModel, Token, EmailToReset
+from .schemas import UserCreate, UserModel, Token, EmailToReset, ResetPassword
 from .service import AuthService, get_user
 
 
@@ -41,7 +41,8 @@ def reset_password_route(
 
 @router.post("/restore-password")
 def restore_password_route(
-		# token: str,
-		# service: AuthService = Depends(),
+		token: str,
+		password: ResetPassword,
+		service: AuthService = Depends(),
 ):
-	pass
+	return service.restore_password(password=password, token=token)

@@ -7,7 +7,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from .exceptions import unauthorized
-from .schemas import UserModel, Token, UserCreate, EmailToReset
+from .schemas import UserModel, Token, UserCreate, EmailToReset, ResetPassword
 from .models import User
 from .dependencies import oauth2_scheme
 from app.profile.models import UserAdditionalInfo
@@ -102,9 +102,11 @@ class AuthService:
 		url = f"http://127.0.0.1:8000/auth/restore-password?token={token}"
 		return url
 
-	# def restore_password(self, password: ResetPassword, token: Token) -> 0:
-	# 	payload = jwt.decode(token, config.JWT_SECRET, algorithms=["HS256"])
-	# 	email = payload.get("user_email")
-	# 	user = self.session.query(User).filter_by(email=email)
-	# 	user.password = password.password
-	# 	return 0
+	def restore_password(self, password: ResetPassword, token: str) -> 0:
+		payload = jwt.decode(token, config.JWT_SECRET, algorithms=["HS256"])
+		email = payload.get("user_email")
+		user = self.session.query(User).filter_by(email=email).first()
+		# return user.username
+		user.password = self.hash_password(password=password.password)
+		self.session.commit()
+		return 0
