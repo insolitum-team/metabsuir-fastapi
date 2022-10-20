@@ -9,3 +9,5 @@ DATABASE_URL =\
 
 JWT_SECRET = os.getenv("JWT_SECRET")
 TELEGRAM_API_KEY = os.getenv("TELEGRAM_API_KEY")
+SENDER = os.getenv("SENDER")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
