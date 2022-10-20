@@ -1,4 +1,3 @@
-# Module specific business logic
 from passlib.hash import bcrypt
 from jose import jwt, JWTError
 from pydantic import ValidationError
@@ -6,7 +5,7 @@ from pydantic.schema import datetime, timedelta
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from .exceptions import unauthorized
+from .exceptions import unauthorized, user_not_found
 from .schemas import UserModel, Token, UserCreate, EmailToReset, ResetPassword
 from .models import User
 from .dependencies import oauth2_scheme
@@ -97,7 +96,7 @@ class AuthService:
 	def reset_password(self, email_data: EmailToReset) -> str | int:
 		user = self.session.query(User).filter_by(email=email_data.email).first()
 		if not user:
-			return 0
+			raise user_not_found
 		token = self.create_reset_password_token(email=email_data.email)
 		url = f"http://127.0.0.1:8000/auth/restore-password?token={token}"
 		return url
@@ -106,7 +105,6 @@ class AuthService:
 		payload = jwt.decode(token, config.JWT_SECRET, algorithms=["HS256"])
 		email = payload.get("user_email")
 		user = self.session.query(User).filter_by(email=email).first()
-		# return user.username
 		user.password = self.hash_password(password=password.password)
 		self.session.commit()
-		return 0
+		return self.create_token(user)
