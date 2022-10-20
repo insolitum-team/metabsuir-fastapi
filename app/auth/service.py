@@ -94,11 +94,12 @@ class AuthService:
 		token = jwt.encode(payload, config.JWT_SECRET, algorithm="HS256")
 		return Token(access_token=token)
 
-	def reset_password(self, email_data: EmailToReset) -> Token | int:
+	def reset_password(self, email_data: EmailToReset) -> str | int:
 		user = self.session.query(User).filter_by(email=email_data.email).first()
 		if not user:
 			return 0
-		url = self.create_reset_password_token(email=email_data.email)
+		token = self.create_reset_password_token(email=email_data.email)
+		url = f"http://127.0.0.1:8000/auth/restore-password?token={token}"
 		return url
 
 	# def restore_password(self, password: ResetPassword, token: Token) -> 0:
