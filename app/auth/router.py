@@ -38,7 +38,7 @@ def get_user(
 	return user
 
 
-@router.post("/reset-password")
+@router.post("/email-reset-password")
 def email_password_route(
 		email: EmailToReset,
 		service: AuthService = Depends(),
@@ -46,8 +46,8 @@ def email_password_route(
 	return service.email_to_reset(email_data=email)
 
 
-@router.post("/restore-password")
-def restore_password_route(
+@router.post("/reset-password")
+def reset_password_route(
 		token: str,
 		password: ResetPassword,
 		service: AuthService = Depends(),

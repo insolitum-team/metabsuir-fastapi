@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator, ValidationError
+from pydantic import BaseModel, EmailStr
 
 
 class UserBase(BaseModel):
@@ -12,19 +12,13 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
 	password: str
 
-	@validator("password")
-	def validate_password(cls, password: str) -> str:
-		if len(password) < 5 or len(password) > 10:
-			raise ValidationError
-		return password
-
 
 class UserModel(UserBase):
 	id: int
 
 
 class EmailToReset(BaseModel):
-	email: str
+	email: list[EmailStr]
 
 
 class ResetPassword(BaseModel):

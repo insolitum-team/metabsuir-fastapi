@@ -4,8 +4,7 @@ from pydantic import ValidationError
 from pydantic.schema import datetime, timedelta
 from fastapi import Depends
 from sqlalchemy.orm import Session
-import smtplib
-from email.message import EmailMessage
+from fastapi_mail import MessageSchema, MessageType, FastMail
 
 from .exceptions import unauthorized, user_not_found
 from .schemas import UserModel, Token, UserCreate, EmailToReset, ResetPassword
@@ -96,21 +95,22 @@ class AuthService:
 		return Token(access_token=token)
 
 	def email_to_reset(self, email_data: EmailToReset) -> str | int:
-		user = self.session.query(User).filter_by(email=email_data.email).first()
+		user = self.session.query(User).filter_by(email=email_data.email[0]).first()
 		if not user:
 			raise user_not_found
-		token = self.create_reset_password_token(email=email_data.email)
-		url = f"http://127.0.0.1:8000/auth/restore-password?token={token}"
-		message = EmailMessage()
-		message["From"] = config.SENDER
-		message["To"] = email_data.email
-		message.set_content(
-			url,
-			# subtype="html",
+		token = self.create_reset_password_token(email=email_data.email[0])
+		url = f"{config.DOMAIN}auth/restore-password?token={token}"
+		message = MessageSchema(
+			subject="Fastapi-Mail module",
+			recipients=email_data.dict().get("email"),
+			template_body={
+				"url": url,
+				"username": user.username,
+			},
+			subtype=MessageType.html,
 		)
-		with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-			smtp.login(config.SENDER, config.EMAIL_PASSWORD)
-			smtp.send_message(message)
+		fm = FastMail(config.EMAIL_CONFIG)
+		fm.send_message(message=message, template_name="reset_password.html",)
 		return url
 
 	def restore_password(self, password: ResetPassword, token: str) -> 0:
