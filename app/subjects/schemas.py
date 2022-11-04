@@ -14,6 +14,10 @@ class SubjectModel(SubjectBase):
     pass
 
 
+class SubjectCreate(SubjectBase):
+    pass
+
+
 class SubjectInfoBase(BaseModel):
     title: str
     subtitle: str
@@ -30,3 +34,7 @@ class SubjectInfoModel(SubjectInfoBase):
     subject_id: int
     user_id: int
     date: datetime.datetime
+
+
+class SubjectInfoCreate(SubjectInfoBase):
+    subject_id: int
