@@ -10,6 +10,16 @@ class SubjectService:
     def __init__(self, session: Session = Depends(database.get_session)):
         self.session = session
 
+    def get_subjects(self, subject_id: int | None = None) -> list[Subject] | Subject:
+        if not subject_id:
+            return self.session.query(Subject).all()
+        return self.session.query(Subject).get(subject_id)
+
+    def get_subject_info(self, subject_id: int | None = None) -> list[SubjectInfo] | SubjectInfo:
+        if not subject_id:
+            return self.session.query(SubjectInfo).all()
+        return self.session.query(SubjectInfo).filter_by(subject_id=subject_id).first()
+
     def subject_create(
             self,
             subject_data: SubjectCreate
