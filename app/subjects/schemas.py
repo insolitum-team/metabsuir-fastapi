@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from pydantic import BaseModel
 
@@ -33,7 +33,7 @@ class SubjectInfoModel(SubjectInfoBase):
     id: int
     subject_id: int
     user_id: int
-    date: datetime.datetime
+    date: datetime
 
 
 class SubjectInfoCreate(SubjectInfoBase):

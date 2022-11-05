@@ -12,7 +12,7 @@ from app.profile.schemas import AdditionalInfoCreate, AdditionalInfoUpdate, Addi
 class ProfileService:
 
 	@classmethod
-	def _get_path(cls, filename: str):
+	def _get_path(cls, filename: str) -> str:
 		return os.path.join(config.PROFILE_IMAGE_PATH, filename)
 
 	def __init__(self, session: Session = Depends(database.get_session)):

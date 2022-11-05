@@ -1,14 +1,39 @@
-from fastapi import Depends
+import os
+import shutil
+from fastapi import Depends, UploadFile, File
 from sqlalchemy.orm import Session
 
+from .config import SUBJECT_FILE_PATH, SUBJECT_IMAGE_PATH
 from app import database
+from .constants import FileKind
 from .schemas import SubjectInfoCreate, SubjectCreate
 from .models import Subject, SubjectInfo
 
 
 class SubjectService:
+
+    @classmethod
+    def _get_image_path(cls, filename: str) -> str:
+        return os.path.join(SUBJECT_IMAGE_PATH, filename)
+
+    @classmethod
+    def _get_file_path(cls, filename: str) -> str:
+        return os.path.join(SUBJECT_FILE_PATH, filename)
+
     def __init__(self, session: Session = Depends(database.get_session)):
         self.session = session
+
+    def _upload_image(
+            self,
+            kind: FileKind,
+            file: UploadFile = File(...)
+    ):
+        if kind == "image":
+            path = self._get_image_path(filename=file.filename)
+        else:
+            path = self._get_file_path(filename=file.filename)
+        with open(path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
 
     def get_subjects(self, subject_id: int | None = None) -> list[Subject] | Subject:
         if not subject_id:
