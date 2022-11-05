@@ -1,5 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from .service import SubjectService
 
 router = APIRouter(
     prefix="/subjects",
@@ -8,8 +9,11 @@ router = APIRouter(
 
 
 @router.get("/get-subject")
-def get_subject_route():
-    pass
+def get_subject_route(
+    subject_id: int | None = None,
+    service: SubjectService = Depends(),
+):
+    return service.get_subjects(subject_id=subject_id)
 
 
 @router.get("/get-subject-additional")

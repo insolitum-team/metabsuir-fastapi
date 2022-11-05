@@ -1,1 +1,1 @@
-PROFILE_IMAGE_PATH = "images/profile_images/"
+PROFILE_IMAGE_PATH = "media/images/profile_images/"
