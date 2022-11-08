@@ -12,6 +12,7 @@ from app.database import Base
 from app.forum.models import Section, Message, Theme
 from app.auth.models import User
 from app.profile.models import UserAdditionalInfo
+from app.subjects.models import SubjectInfo, Subject
 
 config = context.config
 

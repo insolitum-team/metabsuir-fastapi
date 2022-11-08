@@ -23,7 +23,7 @@ class SubjectService:
     def __init__(self, session: Session = Depends(database.get_session)):
         self.session = session
 
-    def _upload_image(
+    def _upload_file(
             self,
             kind: FileKind,
             file: UploadFile = File(...)
@@ -58,11 +58,20 @@ class SubjectService:
             self,
             user_id: int,
             subject_info_data: SubjectInfoCreate,
+            image: UploadFile = File(...),
+            file: UploadFile = File(...)
     ) -> SubjectInfo:
+        self._upload_file(kind=FileKind.IMAGE, file=image)
+        self._upload_file(kind=FileKind.FILE, file=file)
         subject_info = SubjectInfo(
             user_id=user_id,
             **subject_info_data.dict(),
+            image_url=self._get_image_path(image.filename),
+            file_url=self._get_file_path(file.filename)
         )
         self.session.add(subject_info)
         self.session.commit()
         return subject_info
+
+    def get_subject_file(self):
+        pass

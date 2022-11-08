@@ -22,8 +22,6 @@ class SubjectInfoBase(BaseModel):
     title: str
     subtitle: str
     body: str
-    image_url: str
-    file_url: str
 
     class Config:
         orm_mode = True
@@ -31,8 +29,9 @@ class SubjectInfoBase(BaseModel):
 
 class SubjectInfoModel(SubjectInfoBase):
     id: int
-    subject_id: int
     user_id: int
+    image_url: str
+    file_url: str
     date: datetime
 
 
