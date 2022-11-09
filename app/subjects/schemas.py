@@ -18,10 +18,16 @@ class SubjectCreate(SubjectBase):
     pass
 
 
+class SubjectUpdate(SubjectBase):
+    pass
+
+
 class SubjectInfoBase(BaseModel):
     title: str
     subtitle: str
     body: str
+    image_url: str | None = None
+    file_url: str | None = None
 
     class Config:
         orm_mode = True
@@ -30,10 +36,12 @@ class SubjectInfoBase(BaseModel):
 class SubjectInfoModel(SubjectInfoBase):
     id: int
     user_id: int
-    image_url: str
-    file_url: str
     date: datetime
 
 
 class SubjectInfoCreate(SubjectInfoBase):
     subject_id: int
+
+
+class SubjectInfoUpdate(SubjectInfoBase):
+    pass

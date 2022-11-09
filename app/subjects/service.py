@@ -1,39 +1,15 @@
-import os
-import shutil
-from fastapi import Depends, UploadFile, File
+from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from .config import SUBJECT_FILE_PATH, SUBJECT_IMAGE_PATH
 from app import database
-from .constants import FileKind
-from .schemas import SubjectInfoCreate, SubjectCreate
+from .schemas import SubjectInfoCreate, SubjectCreate, SubjectUpdate, SubjectInfoUpdate
 from .models import Subject, SubjectInfo
 
 
 class SubjectService:
 
-    @classmethod
-    def _get_image_path(cls, filename: str) -> str:
-        return os.path.join(SUBJECT_IMAGE_PATH, filename)
-
-    @classmethod
-    def _get_file_path(cls, filename: str) -> str:
-        return os.path.join(SUBJECT_FILE_PATH, filename)
-
     def __init__(self, session: Session = Depends(database.get_session)):
         self.session = session
-
-    def _upload_file(
-            self,
-            kind: FileKind,
-            file: UploadFile = File(...)
-    ):
-        if kind == "image":
-            path = self._get_image_path(filename=file.filename)
-        else:
-            path = self._get_file_path(filename=file.filename)
-        with open(path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
 
     def get_subjects(self, subject_id: int | None = None) -> list[Subject] | Subject:
         if not subject_id:
@@ -58,20 +34,33 @@ class SubjectService:
             self,
             user_id: int,
             subject_info_data: SubjectInfoCreate,
-            image: UploadFile = File(...),
-            file: UploadFile = File(...)
     ) -> SubjectInfo:
-        self._upload_file(kind=FileKind.IMAGE, file=image)
-        self._upload_file(kind=FileKind.FILE, file=file)
         subject_info = SubjectInfo(
             user_id=user_id,
             **subject_info_data.dict(),
-            image_url=self._get_image_path(image.filename),
-            file_url=self._get_file_path(file.filename)
         )
         self.session.add(subject_info)
         self.session.commit()
         return subject_info
 
-    def get_subject_file(self):
-        pass
+    def subject_update(
+            self,
+            subject_id: int,
+            subject_data: SubjectUpdate,
+    ):
+        subject_to_update = self.session.query(Subject).get(subject_id)
+        for field, value in subject_data:
+            setattr(subject_to_update, field, value)
+        self.session.commit()
+        return subject_to_update
+
+    def subject_info_update(
+            self,
+            subject_info_id: int,
+            subject_info_data: SubjectInfoUpdate,
+    ):
+        subject_info = self.session.query(SubjectInfo).get(subject_info_id)
+        for field, value in subject_info_data:
+            setattr(subject_info, field, value)
+        self.session.commit()
+        return subject_info

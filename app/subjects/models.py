@@ -18,7 +18,7 @@ class SubjectInfo(Base):
     subject_id = Column(Integer, ForeignKey("metabsuir_subject.id"))
     user_id = Column(Integer, ForeignKey("metabsuir_users.id"))
     title = Column(String(255), nullable=False, unique=True)
-    subtitle = Column(Text)
+    subtitle = Column(Text, nullable=False)
     body = Column(Text)
     date = Column(DateTime, default=datetime.datetime.utcnow)
     image_url = Column(String, nullable=True)
